@@ -648,6 +648,14 @@
   </section>
 </div>
 
+<!-- MUSIC -->
+<audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+<button class="music-btn" id="musicBtn" title="Música">
+  <div class="music-bars" id="musicBars">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</button>
+
 <!-- SCROLL INDICATOR -->
 <div class="scroll-indicator" id="scrollIndicator">
   <div class="scroll-arrow"></div>
@@ -677,7 +685,32 @@ const heartBtn = document.getElementById('heartBtn');
 const sceneHeart = document.getElementById('sceneHeart');
 const sceneMain = document.getElementById('sceneMain');
 
+// ============== MUSIC ==============
+const bgMusic = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+const musicBars = document.getElementById('musicBars');
+let musicPlaying = false;
+
+function playMusic() {
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    musicBars.classList.add('playing');
+  }).catch(() => {});
+}
+
+musicBtn.addEventListener('click', () => {
+  if (musicPlaying) {
+    bgMusic.pause();
+    musicPlaying = false;
+    musicBars.classList.remove('playing');
+  } else {
+    playMusic();
+  }
+});
+
 heartBtn.addEventListener('click', () => {
+  // Start music on first interaction
+  playMusic();
   // Burst effect
   createHeartBurst();
   setTimeout(() => {
