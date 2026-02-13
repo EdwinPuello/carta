@@ -940,7 +940,15 @@ function playMusic() {
 }
 
 function switchToLetterMusic() {
-  // Fade out current music
+  // On iOS, audio.play() MUST be called directly inside a user tap handler.
+  // Start both audios NOW (muted) so iOS unlocks them, then fade volumes.
+  letterMusic.volume = 0;
+  letterMusic.play().catch(() => {});
+  ambientMusic.volume = 0;
+  ambientMusic.play().catch(() => {});
+  ambientPlaying = true;
+
+  // Fade out bgMusic
   const fadeOut = setInterval(() => {
     if (bgMusic.volume > 0.05) {
       bgMusic.volume -= 0.05;
@@ -948,33 +956,25 @@ function switchToLetterMusic() {
       clearInterval(fadeOut);
       bgMusic.pause();
       bgMusic.volume = 1;
-      // Switch to letter music
       currentAudio = letterMusic;
-      letterMusic.volume = 0;
-      letterMusic.play().then(() => {
-        // Fade in letter music
-        const fadeIn = setInterval(() => {
-          if (letterMusic.volume < 0.95) {
-            letterMusic.volume += 0.05;
-          } else {
-            letterMusic.volume = 1;
-            clearInterval(fadeIn);
-          }
-        }, 50);
-      }).catch(() => {});
-      // Start ambient music very soft
-      ambientMusic.volume = 0;
-      ambientMusic.play().then(() => {
-        ambientPlaying = true;
-        const fadeInAmbient = setInterval(() => {
-          if (ambientMusic.volume < 0.15) {
-            ambientMusic.volume += 0.01;
-          } else {
-            ambientMusic.volume = 0.15;
-            clearInterval(fadeInAmbient);
-          }
-        }, 80);
-      }).catch(() => {});
+      // Fade in letter music
+      const fadeIn = setInterval(() => {
+        if (letterMusic.volume < 0.95) {
+          letterMusic.volume += 0.05;
+        } else {
+          letterMusic.volume = 1;
+          clearInterval(fadeIn);
+        }
+      }, 50);
+      // Fade in ambient music very soft
+      const fadeInAmbient = setInterval(() => {
+        if (ambientMusic.volume < 0.15) {
+          ambientMusic.volume += 0.01;
+        } else {
+          ambientMusic.volume = 0.15;
+          clearInterval(fadeInAmbient);
+        }
+      }, 80);
     }
   }, 50);
 }
@@ -994,6 +994,11 @@ musicBtn.addEventListener('click', () => {
 heartBtn.addEventListener('click', () => {
   // Start music on first interaction
   playMusic();
+  // Pre-unlock other audios for iOS (play & immediately pause)
+  letterMusic.volume = 0;
+  letterMusic.play().then(() => { letterMusic.pause(); letterMusic.currentTime = 0; }).catch(() => {});
+  ambientMusic.volume = 0;
+  ambientMusic.play().then(() => { ambientMusic.pause(); ambientMusic.currentTime = 0; }).catch(() => {});
   // Burst effect
   createHeartBurst();
   setTimeout(() => {
@@ -1300,15 +1305,36 @@ envelope.addEventListener('click', () => {
   // Open the envelope flap
   envelope.classList.add('opened');
 
-  // Switch music
+  // Switch music — start ALL audios immediately in the tap handler (iOS requirement)
   if (musicPlaying) {
     switchToLetterMusic();
   } else {
     currentAudio = letterMusic;
-    playMusic();
-    // Also start ambient soft
-    ambientMusic.volume = 0.15;
-    ambientMusic.play().then(() => { ambientPlaying = true; }).catch(() => {});
+    letterMusic.volume = 0;
+    letterMusic.play().then(() => {
+      musicPlaying = true;
+      musicBars.classList.add('playing');
+      const fadeIn = setInterval(() => {
+        if (letterMusic.volume < 0.95) {
+          letterMusic.volume += 0.05;
+        } else {
+          letterMusic.volume = 1;
+          clearInterval(fadeIn);
+        }
+      }, 50);
+    }).catch(() => {});
+    ambientMusic.volume = 0;
+    ambientMusic.play().then(() => {
+      ambientPlaying = true;
+      const fadeInAmbient = setInterval(() => {
+        if (ambientMusic.volume < 0.15) {
+          ambientMusic.volume += 0.01;
+        } else {
+          ambientMusic.volume = 0.15;
+          clearInterval(fadeInAmbient);
+        }
+      }, 80);
+    }).catch(() => {});
   }
 
   // After envelope animation, hide envelope and show letter card
