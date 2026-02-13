@@ -940,54 +940,23 @@ function playMusic() {
 }
 
 function switchToLetterMusic() {
-  // Fade out current music
-  const fadeOut = setInterval(() => {
-    if (bgMusic.volume > 0.05) {
-      bgMusic.volume -= 0.05;
-    } else {
-      clearInterval(fadeOut);
-      bgMusic.pause();
-      bgMusic.volume = 1;
-      // Switch to letter music
-      currentAudio = letterMusic;
-      letterMusic.volume = 0;
-      letterMusic.play().then(() => {
-        // Fade in letter music
-        const fadeIn = setInterval(() => {
-          if (letterMusic.volume < 0.95) {
-            letterMusic.volume += 0.05;
-          } else {
-            letterMusic.volume = 1;
-            clearInterval(fadeIn);
-          }
-        }, 50);
-      }).catch(() => {});
-      // Start ambient music very soft
-      ambientMusic.volume = 0;
-      ambientMusic.play().then(() => {
-        ambientPlaying = true;
-        const fadeInAmbient = setInterval(() => {
-          if (ambientMusic.volume < 0.15) {
-            ambientMusic.volume += 0.01;
-          } else {
-            ambientMusic.volume = 0.15;
-            clearInterval(fadeInAmbient);
-          }
-        }, 80);
-      }).catch(() => {});
-    }
-  }, 50);
+  // Stop background music after a short delay, then play hermanitos
+  setTimeout(() => {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    currentAudio = letterMusic;
+    letterMusic.volume = 1;
+    letterMusic.play().catch(() => {});
+  }, 500);
 }
 
 musicBtn.addEventListener('click', () => {
   if (musicPlaying) {
     currentAudio.pause();
-    if (ambientPlaying) ambientMusic.pause();
     musicPlaying = false;
     musicBars.classList.remove('playing');
   } else {
     playMusic();
-    if (ambientPlaying) ambientMusic.play().catch(() => {});
   }
 });
 
@@ -1305,10 +1274,11 @@ envelope.addEventListener('click', () => {
     switchToLetterMusic();
   } else {
     currentAudio = letterMusic;
-    playMusic();
-    // Also start ambient soft
-    ambientMusic.volume = 0.15;
-    ambientMusic.play().then(() => { ambientPlaying = true; }).catch(() => {});
+    letterMusic.volume = 1;
+    letterMusic.play().then(() => {
+      musicPlaying = true;
+      musicBars.classList.add('playing');
+    }).catch(() => {});
   }
 
   // After envelope animation, hide envelope and show letter card
