@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti, Angelica 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #e8456b;
+    --rose-light: #ff6b8a;
+    --rose-deep: #c9184a;
+    --gold: #d4a574;
+    --gold-light: #f0d9b5;
+    --cream: #fdf6f0;
+    --blush: #fff0f3;
+    --brown: #5c3d2e;
+    --green-dark: #2d5a27;
+    --green-mid: #4a8c3f;
+    --green-light: #7ec870;
+    --green-leaf: #5cb85c;
+    --pink-petal: #ffb6c1;
+    --white-petal: #fff5f7;
+    --lilac: #c8a2d4;
+    --lilac-light: #e8d5f0;
+  }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--cream);
+    overflow: hidden;
+    min-height: 100vh;
+    color: var(--brown);
+  }
+
+  body.unlocked {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* ========== FLOATING PARTICLES ========== */
+  .particles-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    opacity: 0;
+    animation: floatParticle 8s ease-in-out infinite;
+  }
+
+  @keyframes floatParticle {
+    0% { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+    20% { opacity: 0.7; }
+    80% { opacity: 0.5; }
+    100% { opacity: 0; transform: translateY(-20vh) rotate(360deg) scale(1); }
+  }
+
+  /* ========== SCENE 1: HEART ========== */
+  .scene-heart {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: radial-gradient(ellipse at center, var(--blush) 0%, var(--cream) 70%);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+
+  .scene-heart.hidden {
+    opacity: 0;
+    transform: scale(1.5);
+    pointer-events: none;
+  }
+
+  .heart-wrapper {
+    cursor: pointer;
+    position: relative;
+    animation: heartFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes heartFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .heart-svg {
+    width: 180px;
+    height: 180px;
+    filter: drop-shadow(0 10px 40px rgba(232, 69, 107, 0.4));
+    transition: transform 0.3s ease;
+  }
+
+  .heart-wrapper:hover .heart-svg {
+    transform: scale(1.15);
+  }
+
+  .heart-svg path {
+    fill: var(--rose);
+    animation: heartPulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes heartPulse {
+    0%, 100% { transform-origin: center; transform: scale(1); }
+    15% { transform: scale(1.12); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+  }
+
+  .heart-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,69,107,0.15) 0%, transparent 70%);
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  }
+
+  .heart-text {
+    margin-top: 40px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.6rem;
+    color: var(--rose);
+    opacity: 0;
+    animation: fadeInUp 1.5s ease 0.5s forwards;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .heart-text .tap-hint {
+    display: block;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-top: 12px;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== SCENE 2: MAIN CONTENT ========== */
+  .scene-main {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.5s ease 0.5s;
+    position: relative;
+    z-index: 5;
+  }
+
+  .scene-main.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ========== TREE SECTION ========== */
+  .tree-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background: linear-gradient(180deg, var(--cream) 0%, #f0e8d8 50%, #e8dcc8 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tree-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    color: var(--rose-deep);
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeInUp 1s ease 1s forwards;
+  }
+
+  .tree-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeInUp 1s ease 1.3s forwards;
+  }
+
+  .tree-canvas-wrapper {
+    position: relative;
+    width: 400px;
+    height: 500px;
+    max-width: 90vw;
+  }
+
+  #treeCanvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ========== COUNTER SECTION ========== */
+  .counter-section {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, #e8dcc8 0%, var(--blush) 50%, var(--cream) 100%);
+    position: relative;
+  }
+
+  .counter-label {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: var(--rose-deep);
+    margin-bottom: 30px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease;
+  }
+
+  .counter-label.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .counter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    max-width: 700px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease 0.3s;
+  }
+
+  .counter-grid.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .counter-box {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(232, 69, 107, 0.15);
+    border-radius: 20px;
+    padding: 20px 18px;
+    min-width: 110px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(232, 69, 107, 0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .counter-box:hover {
+    transform: translateY(-5px);
+  }
+
+  .counter-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--rose);
+    line-height: 1;
+    display: block;
+  }
+
+  .counter-unit {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    display: block;
+  }
+
+  .counter-live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--rose);
+    border-radius: 50%;
+    margin-left: 6px;
+    animation: livePulse 1s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .counter-seconds-text {
+    margin-top: 25px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--brown);
+    opacity: 0.7;
+    text-align: center;
+  }
+
+  /* ========== LETTER SECTION ========== */
+  .letter-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--blush) 100%);
+  }
+
+  /* ========== ENVELOPE ========== */
+  .envelope-wrapper {
+    perspective: 1000px;
+    max-width: 650px;
+    width: 100%;
+  }
+
+  .envelope {
+    position: relative;
+    width: 100%;
+    padding-bottom: 65%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .envelope:hover {
+    transform: scale(1.02);
+  }
+
+  .envelope-body {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #f5e6d3 0%, #ecdcc5 50%, #e8d4b8 100%);
+    border-radius: 8px;
+    box-shadow:
+      0 8px 32px rgba(139, 90, 60, 0.15),
+      0 2px 8px rgba(0,0,0,0.06),
+      inset 0 -2px 6px rgba(139, 90, 60, 0.08);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  /* Envelope texture lines */
+  .envelope-body::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(180, 150, 120, 0.06) 28px,
+        rgba(180, 150, 120, 0.06) 29px
+      );
+    pointer-events: none;
+  }
+
+  /* Envelope front triangle decoration */
+  .envelope-front {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 3;
+    overflow: hidden;
+  }
+
+  .envelope-front::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    width: 120%; height: 120%;
+    transform: translateX(-50%) rotate(45deg);
+    transform-origin: top center;
+    background: linear-gradient(135deg, transparent 48%, rgba(180, 150, 120, 0.12) 49%, rgba(180, 150, 120, 0.12) 51%, transparent 52%);
+  }
+
+  /* Bottom V shape */
+  .envelope-v {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 60%;
+    z-index: 4;
+    overflow: hidden;
+  }
+
+  .envelope-v::before,
+  .envelope-v::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 52%;
+    height: 100%;
+  }
+
+  .envelope-v::before {
+    left: 0;
+    background: linear-gradient(to top right, #e8d4b8 48%, transparent 50%);
+  }
+
+  .envelope-v::after {
+    right: 0;
+    background: linear-gradient(to top left, #ecdcc5 48%, transparent 50%);
+  }
+
+  /* Heart seal */
+  .envelope-seal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, var(--rose) 0%, var(--rose-deep) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(201, 24, 74, 0.3);
+    animation: sealPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes sealPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(201, 24, 74, 0.3); }
+    50% { box-shadow: 0 4px 25px rgba(201, 24, 74, 0.5); }
+  }
+
+  .envelope-hint {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.1rem;
+    color: var(--gold);
+    white-space: nowrap;
+    animation: blink 2s ease-in-out infinite;
+    z-index: 5;
+  }
+
+  /* Envelope flap (the top triangle that opens) */
+  .envelope-flap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 55%;
+    z-index: 6;
+    transform-origin: top center;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .envelope-flap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg, #ecdcc5 0%, #e8d4b8 100%);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Opened state */
+  .envelope.opened .envelope-flap {
+    transform: rotateX(180deg);
+  }
+
+  .envelope.opened .envelope-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    transition: all 0.5s ease;
+  }
+
+  .envelope.opened .envelope-hint {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Letter rising from envelope */
+  .letter-rise {
+    position: absolute;
+    top: 10%; left: 5%;
+    width: 90%; height: 85%;
+    z-index: 1;
+    transform: translateY(0);
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+  }
+
+  .envelope.opened .letter-rise {
+    transform: translateY(-110%);
+  }
+
+  .letter-rise-inner {
+    width: 100%; height: 100%;
+    background: #fffbf5;
+    border-radius: 3px;
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    box-shadow: 0 2px 12px rgba(139, 90, 60, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: var(--rose);
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* Full letter card (shown after envelope animation) */
+  .letter-card-wrapper {
+    max-width: 650px;
+    width: 100%;
+    display: none;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .letter-card-wrapper.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .letter-card {
+    max-width: 650px;
+    width: 100%;
+    background: #fffbf5;
+    border-radius: 3px;
+    padding: 60px 50px;
+    position: relative;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.04),
+      0 12px 40px rgba(139, 90, 60, 0.08),
+      inset 0 0 80px rgba(212, 165, 116, 0.06);
+    border: 1px solid rgba(212, 165, 116, 0.2);
+  }
+
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 1px solid rgba(212, 165, 116, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .letter-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--gold);
+    text-align: right;
+    margin-bottom: 30px;
+  }
+
+  .letter-greeting {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: var(--rose-deep);
+    margin-bottom: 25px;
+  }
+
+  .letter-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    line-height: 2;
+    color: var(--brown);
+    min-height: 300px;
+  }
+
+  .letter-body .typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background: var(--rose);
+    margin-left: 2px;
+    animation: cursorBlink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .letter-signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.6rem;
+    color: var(--rose);
+    text-align: right;
+    margin-top: 40px;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+
+  .letter-signature.visible {
+    opacity: 1;
+  }
+
+  .letter-heart-deco {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.4rem;
+    opacity: 0;
+    transition: opacity 1s ease 0.5s;
+  }
+
+  .letter-heart-deco.visible {
+    opacity: 1;
+  }
+
+  /* ========== FINAL SECTION ========== */
+  .final-section {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background: linear-gradient(180deg, var(--blush) 0%, var(--cream) 100%);
+    text-align: center;
+  }
+
+  .final-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    color: var(--rose);
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    transition: all 1.5s ease;
+  }
+
+  .final-text.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .final-hearts {
+    margin-top: 30px;
+    font-size: 2rem;
+    opacity: 0;
+    transition: opacity 1.5s ease 0.5s;
+  }
+
+  .final-hearts.visible {
+    opacity: 1;
+  }
+
+  .final-hearts span {
+    display: inline-block;
+    animation: heartFloat 2s ease-in-out infinite;
+  }
+
+  .final-hearts span:nth-child(2) { animation-delay: 0.3s; }
+  .final-hearts span:nth-child(3) { animation-delay: 0.6s; }
+  .final-hearts span:nth-child(4) { animation-delay: 0.9s; }
+  .final-hearts span:nth-child(5) { animation-delay: 1.2s; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 600px) {
+    .heart-svg { width: 130px; height: 130px; }
+    .heart-text { font-size: 1.3rem; }
+    .tree-title { font-size: 1.7rem; }
+    .counter-label { font-size: 1.5rem; }
+    .counter-box { min-width: 85px; padding: 15px 12px; }
+    .counter-number { font-size: 2rem; }
+    .letter-card { padding: 40px 28px; }
+    .letter-body { font-size: 1.05rem; }
+    .final-text { font-size: 2.2rem; }
+  }
+
+  /* ========== MUSIC TOGGLE ========== */
+  .music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--rose-light);
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(232,69,107,0.15);
+  }
+
+  .music-btn:hover {
+    transform: scale(1.1);
+    background: var(--blush);
+  }
+
+  .music-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 18px;
+  }
+
+  .music-bars span {
+    width: 3px;
+    background: var(--rose);
+    border-radius: 2px;
+    transition: height 0.3s ease;
+  }
+
+  .music-bars.playing span:nth-child(1) { animation: bar1 0.6s ease-in-out infinite; }
+  .music-bars.playing span:nth-child(2) { animation: bar2 0.5s ease-in-out infinite 0.1s; }
+  .music-bars.playing span:nth-child(3) { animation: bar3 0.7s ease-in-out infinite 0.2s; }
+  .music-bars.playing span:nth-child(4) { animation: bar4 0.55s ease-in-out infinite 0.15s; }
+
+  .music-bars:not(.playing) span { height: 4px !important; }
+
+  @keyframes bar1 { 0%,100%{height:6px} 50%{height:18px} }
+  @keyframes bar2 { 0%,100%{height:10px} 50%{height:14px} }
+  @keyframes bar3 { 0%,100%{height:4px} 50%{height:18px} }
+  @keyframes bar4 { 0%,100%{height:8px} 50%{height:16px} }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .scroll-indicator.visible {
+    opacity: 1;
+  }
+
+  .scroll-arrow {
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid var(--rose-light);
+    border-bottom: 2px solid var(--rose-light);
+    transform: rotate(45deg);
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollBounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.5; }
+    50% { transform: rotate(45deg) translateY(8px); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FLOATING PARTICLES -->
+<div class="particles-container" id="particles"></div>
+
+<!-- SCENE 1: HEART -->
+<div class="scene-heart" id="sceneHeart">
+  <div class="heart-wrapper" id="heartBtn">
+    <div class="heart-glow"></div>
+    <svg class="heart-svg" viewBox="0 0 200 200">
+      <path d="M100 180 C55 140, 10 110, 10 70 C10 35, 40 15, 70 15 C85 15, 95 25, 100 35 C105 25, 115 15, 130 15 C160 15, 190 35, 190 70 C190 110, 145 140, 100 180Z"/>
+    </svg>
+  </div>
+  <div class="heart-text">
+    Para ti, mi hermanita Angélica...
+    <span class="tap-hint">🌸 Toca el corazón 🌸</span>
+  </div>
+</div>
+
+<!-- SCENE 2: MAIN -->
+<div class="scene-main" id="sceneMain">
+
+  <!-- TREE -->
+  <section class="tree-section" id="treeSection">
+    <h2 class="tree-title">Nuestra Union Crece Cada Dia</h2>
+    <p class="tree-subtitle">Como un arbol que hunde sus raices y toca el cielo</p>
+    <div class="tree-canvas-wrapper">
+      <canvas id="treeCanvas" width="400" height="500"></canvas>
+    </div>
+  </section>
+
+  <!-- COUNTER -->
+  <section class="counter-section" id="counterSection">
+    <h2 class="counter-label" id="counterLabel">Desde que llegaste al mundo han pasado...</h2>
+    <div class="counter-grid" id="counterGrid">
+      <div class="counter-box">
+        <span class="counter-number" id="cYears">0</span>
+        <span class="counter-unit">Anos</span>
+      </div>
+      <div class="counter-box">
+        <span class="counter-number" id="cMonths">0</span>
+        <span class="counter-unit">Meses</span>
+      </div>
+      <div class="counter-box">
+        <span class="counter-number" id="cDays">0</span>
+        <span class="counter-unit">Dias</span>
+      </div>
+      <div class="counter-box">
+        <span class="counter-number" id="cHours">0</span>
+        <span class="counter-unit">Horas</span>
+      </div>
+      <div class="counter-box">
+        <span class="counter-number" id="cMinutes">0</span>
+        <span class="counter-unit">Minutos</span>
+      </div>
+      <div class="counter-box">
+        <span class="counter-number" id="cSeconds">0</span>
+        <span class="counter-unit">Segundos<span class="counter-live-dot"></span></span>
+      </div>
+    </div>
+    <p class="counter-seconds-text" id="totalSeconds"></p>
+  </section>
+
+  <!-- LETTER -->
+  <section class="letter-section" id="letterSection">
+    <!-- Envelope (closed) -->
+    <div class="envelope-wrapper" id="envelopeWrapper">
+      <div class="envelope" id="envelope">
+        <div class="envelope-body"></div>
+        <div class="letter-rise">
+          <div class="letter-rise-inner">Para mi hermanita Angélica 🌸</div>
+        </div>
+        <div class="envelope-v"></div>
+        <div class="envelope-front"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-seal">🌸</div>
+        <span class="envelope-hint">Toca para abrir 💌</span>
+      </div>
+    </div>
+
+    <!-- Letter card (hidden until envelope opens) -->
+    <div class="letter-card-wrapper" id="letterCardWrapper">
+      <div class="letter-card">
+        <div class="letter-date">12 de Abril de 1999 — Por Siempre</div>
+        <div class="letter-greeting">Mi hermanita hermosa, Angélica,</div>
+        <div class="letter-body" id="letterBody"><span id="letterTextNode"></span><span class="typewriter-cursor" id="letterCursor"></span></div>
+        <div class="letter-signature" id="letterSignature">
+          Con todo mi carino, tu hermano que te quiere siempre 🌸
+        </div>
+        <div class="letter-heart-deco" id="letterHeartDeco">
+          🤍 🌸 💗 🌸 🤍
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="final-section" id="finalSection">
+    <div class="final-text" id="finalText">Te quiero mucho, Angélica 🌸</div>
+    <div class="final-hearts" id="finalHearts">
+      <span>💗</span><span>🌸</span><span>💝</span><span>🌸</span><span>💗</span>
+    </div>
+  </section>
+</div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" src="../music.mp3" loop preload="auto"></audio>
+<audio id="letterMusic" src="../hermanitos.mp3" preload="auto"></audio>
+<audio id="ambientMusic" src="../cancion.mp3" loop preload="auto"></audio>
+<button class="music-btn" id="musicBtn" title="Musica">
+  <div class="music-bars" id="musicBars">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</button>
+
+<!-- SCROLL INDICATOR -->
+<div class="scroll-indicator" id="scrollIndicator">
+  <div class="scroll-arrow"></div>
+</div>
+
+<script>
+// ============== PARTICLES ==============
+function createParticles() {
+  const container = document.getElementById('particles');
+  const symbols = ['🌸', '✿', '❀', '♡', '✧', '·', '🌺', '💮'];
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    p.style.left = Math.random() * 100 + '%';
+    p.style.fontSize = (Math.random() * 16 + 10) + 'px';
+    p.style.color = `hsl(${330 + Math.random() * 50}, ${60 + Math.random() * 30}%, ${60 + Math.random() * 25}%)`;
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// ============== HEART CLICK → TRANSITION ==============
+const heartBtn = document.getElementById('heartBtn');
+const sceneHeart = document.getElementById('sceneHeart');
+const sceneMain = document.getElementById('sceneMain');
+
+// ============== MUSIC ==============
+const bgMusic = document.getElementById('bgMusic');
+const letterMusic = document.getElementById('letterMusic');
+const ambientMusic = document.getElementById('ambientMusic');
+const musicBtn = document.getElementById('musicBtn');
+const musicBars = document.getElementById('musicBars');
+let musicPlaying = false;
+let currentAudio = bgMusic; // Track which audio is currently active
+let ambientPlaying = false;
+
+function playMusic() {
+  currentAudio.play().then(() => {
+    musicPlaying = true;
+    musicBars.classList.add('playing');
+  }).catch(() => {});
+}
+
+function switchToLetterMusic() {
+  // Fade out current music
+  const fadeOut = setInterval(() => {
+    if (bgMusic.volume > 0.05) {
+      bgMusic.volume -= 0.05;
+    } else {
+      clearInterval(fadeOut);
+      bgMusic.pause();
+      bgMusic.volume = 1;
+      // Switch to letter music
+      currentAudio = letterMusic;
+      letterMusic.volume = 0;
+      letterMusic.play().then(() => {
+        // Fade in letter music
+        const fadeIn = setInterval(() => {
+          if (letterMusic.volume < 0.95) {
+            letterMusic.volume += 0.05;
+          } else {
+            letterMusic.volume = 1;
+            clearInterval(fadeIn);
+          }
+        }, 50);
+      }).catch(() => {});
+      // Start ambient music very soft
+      ambientMusic.volume = 0;
+      ambientMusic.play().then(() => {
+        ambientPlaying = true;
+        const fadeInAmbient = setInterval(() => {
+          if (ambientMusic.volume < 0.15) {
+            ambientMusic.volume += 0.01;
+          } else {
+            ambientMusic.volume = 0.15;
+            clearInterval(fadeInAmbient);
+          }
+        }, 80);
+      }).catch(() => {});
+    }
+  }, 50);
+}
+
+musicBtn.addEventListener('click', () => {
+  if (musicPlaying) {
+    currentAudio.pause();
+    if (ambientPlaying) ambientMusic.pause();
+    musicPlaying = false;
+    musicBars.classList.remove('playing');
+  } else {
+    playMusic();
+    if (ambientPlaying) ambientMusic.play().catch(() => {});
+  }
+});
+
+heartBtn.addEventListener('click', () => {
+  // Start music on first interaction
+  playMusic();
+  // Burst effect
+  createHeartBurst();
+  setTimeout(() => {
+    sceneHeart.classList.add('hidden');
+    sceneMain.classList.add('visible');
+    document.body.classList.add('unlocked');
+    setTimeout(() => {
+      drawTree();
+      startCounter();
+      document.getElementById('scrollIndicator').classList.add('visible');
+    }, 800);
+  }, 600);
+});
+
+function createHeartBurst() {
+  const symbols = ['🌸', '💗', '✿', '♡', '🌺', '💮'];
+  for (let i = 0; i < 20; i++) {
+    const heart = document.createElement('div');
+    heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    heart.style.position = 'fixed';
+    heart.style.left = '50%';
+    heart.style.top = '50%';
+    heart.style.fontSize = (12 + Math.random() * 20) + 'px';
+    heart.style.pointerEvents = 'none';
+    heart.style.zIndex = '1000';
+    heart.style.transition = 'all 1.2s ease-out';
+    heart.style.opacity = '1';
+    document.body.appendChild(heart);
+
+    const angle = (Math.PI * 2 / 20) * i;
+    const dist = 80 + Math.random() * 150;
+    requestAnimationFrame(() => {
+      heart.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`;
+      heart.style.opacity = '0';
+    });
+    setTimeout(() => heart.remove(), 1300);
+  }
+}
+
+// ============== TREE DRAWING ==============
+function drawTree() {
+  const canvas = document.getElementById('treeCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 400 * dpr;
+  canvas.height = 500 * dpr;
+  ctx.scale(dpr, dpr);
+
+  let branches = [];
+  let flowers = [];
+  let leaves = [];
+
+  function branch(x, y, len, angle, width, depth) {
+    if (depth > 10 || len < 4) return;
+
+    const endX = x + Math.cos(angle) * len;
+    const endY = y + Math.sin(angle) * len;
+
+    branches.push({ x1: x, y1: y, x2: endX, y2: endY, width, depth, drawn: false });
+
+    if (depth > 5 && Math.random() > 0.3) {
+      flowers.push({
+        x: endX + (Math.random() - 0.5) * 10,
+        y: endY + (Math.random() - 0.5) * 10,
+        r: 3 + Math.random() * 5,
+        color: Math.random() > 0.4 ? 'var(--pink-petal)' : 'var(--rose-light)',
+        opacity: 0
+      });
+    }
+
+    if (depth > 4 && Math.random() > 0.4) {
+      leaves.push({
+        x: endX,
+        y: endY,
+        size: 4 + Math.random() * 6,
+        angle: angle + (Math.random() - 0.5),
+        opacity: 0
+      });
+    }
+
+    const spread = 0.35 + Math.random() * 0.25;
+    const shrink = 0.68 + Math.random() * 0.12;
+
+    branch(endX, endY, len * shrink, angle - spread + (Math.random() - 0.5) * 0.2, width * 0.7, depth + 1);
+    branch(endX, endY, len * shrink, angle + spread + (Math.random() - 0.5) * 0.2, width * 0.7, depth + 1);
+
+    if (Math.random() > 0.6 && depth < 6) {
+      branch(endX, endY, len * shrink * 0.7, angle + (Math.random() - 0.5) * 1.2, width * 0.5, depth + 2);
+    }
+  }
+
+  // Generate tree data
+  branch(200, 480, 70, -Math.PI / 2, 10, 0);
+
+  // Animate drawing
+  let branchIndex = 0;
+  let phase = 'branches'; // branches → leaves → flowers
+
+  function animateTree() {
+    ctx.clearRect(0, 0, 400, 500);
+
+    // Draw ground
+    ctx.fillStyle = '#d4c5a9';
+    ctx.beginPath();
+    ctx.ellipse(200, 485, 60, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw completed branches
+    for (let i = 0; i <= Math.min(branchIndex, branches.length - 1); i++) {
+      const b = branches[i];
+      const gradient = ctx.createLinearGradient(b.x1, b.y1, b.x2, b.y2);
+      gradient.addColorStop(0, '#5c3d2e');
+      gradient.addColorStop(1, '#7a5a3e');
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = b.width;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(b.x1, b.y1);
+      ctx.lineTo(b.x2, b.y2);
+      ctx.stroke();
+    }
+
+    // Draw leaves
+    leaves.forEach(l => {
+      if (l.opacity > 0) {
+        ctx.save();
+        ctx.translate(l.x, l.y);
+        ctx.rotate(l.angle);
+        ctx.fillStyle = `rgba(90, 160, 70, ${l.opacity})`;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, l.size, l.size * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    });
+
+    // Draw flowers
+    flowers.forEach(f => {
+      if (f.opacity > 0) {
+        ctx.globalAlpha = f.opacity;
+        // Petals
+        for (let p = 0; p < 5; p++) {
+          const pAngle = (Math.PI * 2 / 5) * p;
+          ctx.fillStyle = f.color;
+          ctx.beginPath();
+          ctx.ellipse(
+            f.x + Math.cos(pAngle) * f.r * 0.5,
+            f.y + Math.sin(pAngle) * f.r * 0.5,
+            f.r * 0.55, f.r * 0.35,
+            pAngle, 0, Math.PI * 2
+          );
+          ctx.fill();
+        }
+        // Center
+        ctx.fillStyle = '#f0d9b5';
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    });
+
+    // Hearts on tree
+    if (phase === 'flowers') {
+      ctx.font = '16px serif';
+      ctx.fillStyle = 'rgba(232, 69, 107, 0.6)';
+      ctx.fillText('🌸', 185, 300);
+      ctx.fillText('🌸', 215, 260);
+      ctx.fillText('🌸', 170, 230);
+    }
+
+    if (phase === 'branches') {
+      branchIndex += 3;
+      if (branchIndex >= branches.length) {
+        phase = 'leaves';
+        branchIndex = 0;
+      }
+      requestAnimationFrame(animateTree);
+    } else if (phase === 'leaves') {
+      const batch = 3;
+      for (let i = 0; i < batch && branchIndex < leaves.length; i++, branchIndex++) {
+        leaves[branchIndex].opacity = 0.8;
+      }
+      if (branchIndex >= leaves.length) {
+        phase = 'flowers';
+        branchIndex = 0;
+      }
+      requestAnimationFrame(animateTree);
+    } else if (phase === 'flowers') {
+      const batch = 2;
+      for (let i = 0; i < batch && branchIndex < flowers.length; i++, branchIndex++) {
+        flowers[branchIndex].opacity = 0.9;
+      }
+      if (branchIndex < flowers.length) {
+        requestAnimationFrame(animateTree);
+      }
+    }
+  }
+
+  animateTree();
+}
+
+// ============== LIVE COUNTER ==============
+function startCounter() {
+  // Angelica Puello - 12 de Abril de 1999
+  const startDate = new Date(1999, 3, 12); // April 12, 1999 (month is 0-indexed)
+
+  function update() {
+    const now = new Date();
+    let diff = now - startDate;
+
+    const totalSec = Math.floor(diff / 1000);
+    const totalMin = Math.floor(totalSec / 60);
+    const totalHrs = Math.floor(totalMin / 60);
+    const totalDays = Math.floor(totalHrs / 24);
+
+    // Calculate years, months, days
+    let years = now.getFullYear() - startDate.getFullYear();
+    let months = now.getMonth() - startDate.getMonth();
+    let days = now.getDate() - startDate.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    document.getElementById('cYears').textContent = years;
+    document.getElementById('cMonths').textContent = months;
+    document.getElementById('cDays').textContent = days;
+    document.getElementById('cHours').textContent = hours;
+    document.getElementById('cMinutes').textContent = minutes;
+    document.getElementById('cSeconds').textContent = seconds;
+
+    document.getElementById('totalSeconds').textContent =
+      `${totalSec.toLocaleString('es')} segundos iluminando nuestras vidas... y contando 🌸`;
+
+    requestAnimationFrame(update);
+  }
+  update();
+}
+
+// ============== TYPEWRITER ==============
+const letterText = `Hermanita, hoy quiero dedicarte estas palabras que me nacen del corazon.
+
+Desde aquel 12 de abril de 1999, cuando llegaste al mundo, mi vida cambio para siempre. Tener una hermana como tu es uno de los regalos mas grandes que la vida me ha dado.
+
+Angélica, quiero que sepas que estoy orgulloso de la mujer en la que te has convertido. Tu fuerza, tu alegria, tu forma de enfrentar la vida... todo eso me inspira cada dia.
+
+Hemos compartido risas, travesuras, peleas de hermanos y momentos inolvidables. Cada recuerdo contigo es un tesoro que guardo en mi corazon.
+
+No importa la distancia ni el tiempo, siempre voy a estar para ti. Eres mi hermanita, mi sangre, mi familia. Y quiero que nunca olvides lo mucho que significas para mi.
+
+Te quiero con todo mi corazon, Angélica Puello. Hoy y siempre. 🌸💗`;
+
+// Split text into array respecting surrogate pairs (emojis)
+const letterChars = [...letterText];
+let letterStarted = false;
+let charIndex = 0;
+
+function typeWriter() {
+  const body = document.getElementById('letterBody');
+  const textNode = document.getElementById('letterTextNode');
+  const cursor = document.getElementById('letterCursor');
+
+  if (charIndex < letterChars.length) {
+    const char = letterChars[charIndex];
+    if (char === '\n') {
+      textNode.innerHTML += '<br>';
+    } else {
+      textNode.innerHTML += char;
+    }
+    charIndex++;
+    const delay = char === '.' || char === ',' ? 180 : char === '\n' ? 250 : 55;
+    setTimeout(typeWriter, delay);
+  } else {
+    // Done typing — hide cursor, show signature
+    setTimeout(() => {
+      cursor.style.display = 'none';
+      document.getElementById('letterSignature').classList.add('visible');
+      document.getElementById('letterHeartDeco').classList.add('visible');
+    }, 500);
+  }
+}
+
+// ============== ENVELOPE OPEN ==============
+const envelope = document.getElementById('envelope');
+const envelopeWrapper = document.getElementById('envelopeWrapper');
+const letterCardWrapper = document.getElementById('letterCardWrapper');
+let envelopeOpened = false;
+
+envelope.addEventListener('click', () => {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+
+  // Open the envelope flap
+  envelope.classList.add('opened');
+
+  // Switch music
+  if (musicPlaying) {
+    switchToLetterMusic();
+  } else {
+    currentAudio = letterMusic;
+    playMusic();
+    // Also start ambient soft
+    ambientMusic.volume = 0.15;
+    ambientMusic.play().then(() => { ambientPlaying = true; }).catch(() => {});
+  }
+
+  // After envelope animation, hide envelope and show letter card
+  setTimeout(() => {
+    envelopeWrapper.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+    envelopeWrapper.style.opacity = '0';
+    envelopeWrapper.style.transform = 'scale(0.9)';
+
+    setTimeout(() => {
+      envelopeWrapper.style.display = 'none';
+      letterCardWrapper.classList.add('visible');
+
+      // Start typewriter after letter card is visible
+      if (!letterStarted) {
+        letterStarted = true;
+        setTimeout(typeWriter, 600);
+      }
+    }, 800);
+  }, 2000);
+});
+
+// ============== SCROLL OBSERVER ==============
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+
+      if (id === 'counterSection') {
+        document.getElementById('counterLabel').classList.add('visible');
+        document.getElementById('counterGrid').classList.add('visible');
+      }
+
+      if (id === 'finalSection') {
+        document.getElementById('finalText').classList.add('visible');
+        document.getElementById('finalHearts').classList.add('visible');
+        document.getElementById('scrollIndicator').classList.remove('visible');
+      }
+    }
+  });
+}, { threshold: 0.3 });
+
+observer.observe(document.getElementById('counterSection'));
+observer.observe(document.getElementById('finalSection'));
+
+// Hide scroll indicator when user scrolls near bottom
+window.addEventListener('scroll', () => {
+  const scrollPos = window.scrollY + window.innerHeight;
+  const docHeight = document.documentElement.scrollHeight;
+  if (scrollPos > docHeight - 200) {
+    document.getElementById('scrollIndicator').classList.remove('visible');
+  }
+});
+</script>
+</body>
+</html>
