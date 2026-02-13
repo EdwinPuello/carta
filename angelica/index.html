@@ -929,72 +929,37 @@ const ambientMusic = document.getElementById('ambientMusic');
 const musicBtn = document.getElementById('musicBtn');
 const musicBars = document.getElementById('musicBars');
 let musicPlaying = false;
-let currentAudio = bgMusic; // Track which audio is currently active
-let ambientPlaying = false;
-
-function playMusic() {
-  currentAudio.play().then(() => {
-    musicPlaying = true;
-    musicBars.classList.add('playing');
-  }).catch(() => {});
-}
-
-function switchToLetterMusic() {
-  // On iOS, audio.play() MUST be called directly inside a user tap handler.
-  // Start both audios NOW (muted) so iOS unlocks them, then fade volumes.
-  letterMusic.volume = 0;
-  letterMusic.play().catch(() => {});
-  ambientMusic.volume = 0;
-  ambientMusic.play().catch(() => {});
-  ambientPlaying = true;
-
-  // Fade out bgMusic
-  const fadeOut = setInterval(() => {
-    if (bgMusic.volume > 0.05) {
-      bgMusic.volume -= 0.05;
-    } else {
-      clearInterval(fadeOut);
-      bgMusic.pause();
-      bgMusic.volume = 1;
-      currentAudio = letterMusic;
-      // Fade in letter music
-      const fadeIn = setInterval(() => {
-        if (letterMusic.volume < 0.95) {
-          letterMusic.volume += 0.05;
-        } else {
-          letterMusic.volume = 1;
-          clearInterval(fadeIn);
-        }
-      }, 50);
-      // Fade in ambient music very soft
-      const fadeInAmbient = setInterval(() => {
-        if (ambientMusic.volume < 0.15) {
-          ambientMusic.volume += 0.01;
-        } else {
-          ambientMusic.volume = 0.15;
-          clearInterval(fadeInAmbient);
-        }
-      }, 80);
-    }
-  }, 50);
-}
+let envelopePhase = false; // true after envelope is opened
 
 musicBtn.addEventListener('click', () => {
   if (musicPlaying) {
-    currentAudio.pause();
-    if (ambientPlaying) ambientMusic.pause();
+    if (envelopePhase) {
+      letterMusic.pause();
+      ambientMusic.pause();
+    } else {
+      bgMusic.pause();
+    }
     musicPlaying = false;
     musicBars.classList.remove('playing');
   } else {
-    playMusic();
-    if (ambientPlaying) ambientMusic.play().catch(() => {});
+    if (envelopePhase) {
+      letterMusic.play().catch(() => {});
+      ambientMusic.play().catch(() => {});
+    } else {
+      bgMusic.play().catch(() => {});
+    }
+    musicPlaying = true;
+    musicBars.classList.add('playing');
   }
 });
 
 heartBtn.addEventListener('click', () => {
-  // Start music on first interaction
-  playMusic();
-  // Pre-unlock other audios for iOS (play & immediately pause)
+  // 1) Play music.mp3
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    musicBars.classList.add('playing');
+  }).catch(() => {});
+  // Pre-unlock audios for iOS (play muted & pause immediately)
   letterMusic.volume = 0;
   letterMusic.play().then(() => { letterMusic.pause(); letterMusic.currentTime = 0; }).catch(() => {});
   ambientMusic.volume = 0;
@@ -1301,41 +1266,22 @@ let envelopeOpened = false;
 envelope.addEventListener('click', () => {
   if (envelopeOpened) return;
   envelopeOpened = true;
+  envelopePhase = true;
 
   // Open the envelope flap
   envelope.classList.add('opened');
 
-  // Switch music — start ALL audios immediately in the tap handler (iOS requirement)
-  if (musicPlaying) {
-    switchToLetterMusic();
-  } else {
-    currentAudio = letterMusic;
-    letterMusic.volume = 0;
-    letterMusic.play().then(() => {
-      musicPlaying = true;
-      musicBars.classList.add('playing');
-      const fadeIn = setInterval(() => {
-        if (letterMusic.volume < 0.95) {
-          letterMusic.volume += 0.05;
-        } else {
-          letterMusic.volume = 1;
-          clearInterval(fadeIn);
-        }
-      }, 50);
-    }).catch(() => {});
-    ambientMusic.volume = 0;
-    ambientMusic.play().then(() => {
-      ambientPlaying = true;
-      const fadeInAmbient = setInterval(() => {
-        if (ambientMusic.volume < 0.15) {
-          ambientMusic.volume += 0.01;
-        } else {
-          ambientMusic.volume = 0.15;
-          clearInterval(fadeInAmbient);
-        }
-      }, 80);
-    }).catch(() => {});
-  }
+  // Stop music.mp3 immediately
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+
+  // Start hermanitos.mp3 and cancion.mp3 directly in the tap (iOS needs this)
+  letterMusic.volume = 1;
+  letterMusic.play().catch(() => {});
+  ambientMusic.volume = 0.15;
+  ambientMusic.play().catch(() => {});
+  musicPlaying = true;
+  musicBars.classList.add('playing');
 
   // After envelope animation, hide envelope and show letter card
   setTimeout(() => {
